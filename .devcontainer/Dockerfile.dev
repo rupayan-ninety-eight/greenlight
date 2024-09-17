@@ -1,7 +1,14 @@
 FROM golang:1.23.1
 
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)" -- \
+    -p git \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-completions \
+    -p https://github.com/zsh-users/zsh-syntax-highlighting
+
 # Install Go tools
 RUN go install github.com/air-verse/air@latest 
+
 
 # COPY go.mod go.sum ./
 # RUN go mod download
