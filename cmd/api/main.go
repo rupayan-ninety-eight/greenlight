@@ -47,7 +47,12 @@ func main() {
 		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
 	}
 
-	logger.Info("starting server", slog.String("addr", srv.Addr), slog.String("env", cfg.env), slog.String("version", version))
+	logger.Info(
+		"starting server",
+		slog.String("addr", srv.Addr),
+		slog.String("env", cfg.env),
+		slog.String("version", version),
+	)
 
 	err := srv.ListenAndServe()
 	logger.Error(err.Error())

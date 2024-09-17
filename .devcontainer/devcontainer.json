@@ -35,6 +35,10 @@
                 "go.coverOnSingleTest": true,
                 "go.coverOnSingleTestFile": true,
                 "go.coverOnTestPackage": true,
+				"go.formatTool": "custom",
+				"go.alternateTools": {
+					"customFormatter": "golines"  
+				},
                 "go.lintTool": "golangci-lint",
                 "go.lintOnSave": "package",
                 "[go]": {
