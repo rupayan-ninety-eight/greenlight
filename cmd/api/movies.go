@@ -120,7 +120,12 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 	v := validator.New()
 
 	if data.ValidateMovie(v, movie); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
+		switch {
+		case errors.Is(err, data.ErrEditConflict):
+			app.editConflictResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 
