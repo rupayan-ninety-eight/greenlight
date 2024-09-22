@@ -59,7 +59,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	select {
 	case <-ctx.Done():
-		app.serverErrorResponse(w, r, ctx.Err())
+		app.timeoutExceededResponse(w, r)
 		return
 	default:
 	}

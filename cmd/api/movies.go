@@ -53,7 +53,7 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	select {
 	case <-ctx.Done():
-		app.serverErrorResponse(w, r, ctx.Err())
+		app.timeoutExceededResponse(w, r)
 		return
 	default:
 	}
@@ -87,7 +87,7 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 
 	select {
 	case <-ctx.Done():
-		app.serverErrorResponse(w, r, ctx.Err())
+		app.timeoutExceededResponse(w, r)
 		return
 	default:
 	}
@@ -162,7 +162,7 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	select {
 	case <-ctx.Done():
-		app.serverErrorResponse(w, r, ctx.Err())
+		app.timeoutExceededResponse(w, r)
 		return
 	default:
 	}
@@ -196,7 +196,7 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	select {
 	case <-ctx.Done():
-		app.serverErrorResponse(w, r, ctx.Err())
+		app.timeoutExceededResponse(w, r)
 		return
 	default:
 	}
@@ -250,7 +250,7 @@ func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request
 
 	select {
 	case <-ctx.Done():
-		app.serverErrorResponse(w, r, ctx.Err())
+		app.timeoutExceededResponse(w, r)
 		return
 	default:
 	}
