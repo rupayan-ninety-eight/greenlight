@@ -51,13 +51,6 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 	headers := make(http.Header)
 	headers.Set("Location", fmt.Sprintf("/v1/movies/%d", movie.ID))
 
-	select {
-	case <-ctx.Done():
-		app.timeoutExceededResponse(w, r)
-		return
-	default:
-	}
-
 	err = app.writeJSON(w, http.StatusCreated, envelope{"movie": movie}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
@@ -83,13 +76,6 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 			app.serverErrorResponse(w, r, err)
 		}
 		return
-	}
-
-	select {
-	case <-ctx.Done():
-		app.timeoutExceededResponse(w, r)
-		return
-	default:
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
@@ -160,13 +146,6 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	select {
-	case <-ctx.Done():
-		app.timeoutExceededResponse(w, r)
-		return
-	default:
-	}
-
 	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
@@ -192,13 +171,6 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 			app.serverErrorResponse(w, r, err)
 		}
 		return
-	}
-
-	select {
-	case <-ctx.Done():
-		app.timeoutExceededResponse(w, r)
-		return
-	default:
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"message": "movie successfully deleted"}, nil)
@@ -246,13 +218,6 @@ func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
-	}
-
-	select {
-	case <-ctx.Done():
-		app.timeoutExceededResponse(w, r)
-		return
-	default:
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"movies": movies, "metadata": metadata}, nil)

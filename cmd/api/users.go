@@ -57,13 +57,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	select {
-	case <-ctx.Done():
-		app.timeoutExceededResponse(w, r)
-		return
-	default:
-	}
-
 	err = app.writeJSON(w, http.StatusCreated, envelope{"user": user}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
