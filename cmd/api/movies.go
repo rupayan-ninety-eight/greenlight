@@ -44,7 +44,12 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	err = app.models.Movies.Insert(ctx, movie)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 
@@ -72,6 +77,8 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			app.notFoundResponse(w, r)
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
@@ -99,6 +106,8 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			app.notFoundResponse(w, r)
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
@@ -142,7 +151,12 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	err = app.models.Movies.Update(ctx, movie)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 
@@ -167,6 +181,8 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			app.notFoundResponse(w, r)
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
@@ -216,7 +232,12 @@ func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request
 
 	movies, metadata, err := app.models.Movies.GetAll(ctx, input.Title, input.Genres, input.Filters)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 

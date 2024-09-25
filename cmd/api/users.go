@@ -51,6 +51,8 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		case errors.Is(err, data.ErrDuplicateEmail):
 			v.AddError("email", "a user with this email address already exists")
 			app.failedValidationResponse(w, r, v.Errors)
+		case errors.Is(err, context.DeadlineExceeded):
+			app.timeoutExceededResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
