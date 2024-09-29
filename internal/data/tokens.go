@@ -1,10 +1,14 @@
 package data
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/base32"
 	"time"
+
+	"github.com/rupayan-ninety-eight/greenlight/internal/validator"
 )
 
 const (
@@ -39,4 +43,50 @@ func generateToken(userID int64, ttl time.Duration, scope string) (*Token, error
 	token.Hash = hash[:]
 
 	return token, nil
+}
+
+func ValidateTokenPlaintext(v *validator.Validator, tokenPlaintext string) {
+	v.Check(tokenPlaintext != "", "token", "must be provided")
+	v.Check(len(tokenPlaintext) == 26, "token", "must be 26 bytes long")
+}
+
+type TokenModel struct {
+	DB *sql.DB
+}
+
+func (m TokenModel) New(
+	ctx context.Context,
+	userID int64,
+	ttl time.Duration,
+	scope string,
+) (*Token, error) {
+	token, err := generateToken(userID, ttl, scope)
+	if err != nil {
+		return nil, err
+	}
+
+	err = m.Insert(ctx, token)
+	return token, err
+}
+
+func (m TokenModel) Insert(ctx context.Context, token *Token) error {
+	query := `
+        INSERT INTO tokens (hash, user_id, expiry, scope) 
+        VALUES ($1, $2, $3, $4)`
+
+	args := []any{token.Hash, token.UserID, token.Expiry, token.Scope}
+
+	_, err := m.DB.ExecContext(ctx, query, args...)
+	return err
+}
+
+func (m TokenModel) DeleteAllForUser(ctx context.Context, scope string, userID int64) error {
+	query := `
+        DELETE FROM tokens 
+        WHERE scope = $1 AND user_id = $2`
+
+	args := []any{scope, userID}
+
+	_, err := m.DB.ExecContext(ctx, query, args...)
+	return err
 }
