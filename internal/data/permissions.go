@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"slices"
+
+	"github.com/lib/pq"
 )
 
 type Permissions []string
@@ -48,4 +50,13 @@ func (m PermissionModel) GetAllForUser(ctx context.Context, userID int64) (Permi
 	}
 
 	return permissions, nil
+}
+
+func (m PermissionModel) AddForUser(ctx context.Context, userID int64, codes ...string) error {
+	query := `
+        INSERT INTO users_permissions
+        SELECT $1, permissions.id FROM permissions WHERE permissions.code = ANY($2)`
+
+	_, err := m.DB.ExecContext(ctx, query, userID, pq.Array(codes))
+	return err
 }
