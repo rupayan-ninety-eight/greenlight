@@ -30,7 +30,7 @@ func (app *application) routes() http.Handler {
 		app.createAuthenticationTokenHandler,
 	)
 
-	standard := alice.New(app.recoverPanic, app.logRequest, app.rateLimit)
+	standard := alice.New(app.recoverPanic, app.logRequest, app.rateLimit, app.authenticate)
 
 	return standard.Then(router)
 }
