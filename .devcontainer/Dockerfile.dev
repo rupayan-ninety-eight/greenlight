@@ -1,5 +1,8 @@
 FROM golang:1.23.1
 
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install bsdmainutils -y
+
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)" -- \
     -p git \
     -p https://github.com/zsh-users/zsh-autosuggestions \
@@ -11,4 +14,4 @@ RUN go install github.com/rakyll/hey@latest
 RUN go install github.com/air-verse/air@latest 
 RUN go install github.com/segmentio/golines@latest
 RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-# RUN go mod download
+RUN go mod download
